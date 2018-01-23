@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='flightaware',
+    name='flightawarelib',
     version='0.0.1',
     packages=['venv.Lib.distutils', 'venv.Lib.encodings', 'venv.Lib.importlib', 'venv.Lib.collections',
               'venv.Lib.site-packages.pip', 'venv.Lib.site-packages.pip.req', 'venv.Lib.site-packages.pip.vcs',

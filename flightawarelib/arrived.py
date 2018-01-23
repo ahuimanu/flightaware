@@ -5,6 +5,8 @@ import pymysql
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
 
+from flightawarelib import config
+
 # FlightAwareArrived class
 
 # https://flightaware.com/commercial/flightxml/explorer/#op_Arrived
@@ -19,25 +21,25 @@ from datetime import datetime
 class ArrivalFlightStruct:
 
     def __init__(self, actualarrivaltime, actualdeparturetime, aircrafttype, destination,
-                 destinationCity, destinationName, ident, origin, originCity, originName):
+                 destinationcity, destinationname, ident, origin, origincity, originname):
         self.actualarrivaltime = datetime.fromtimestamp(actualarrivaltime)
         self.actualdeparturetime = datetime.fromtimestamp(actualdeparturetime)
         self.aircrafttype = aircrafttype
         self.destination = destination
-        self.destinationCity = destinationCity
-        self.destinationName = destinationName
+        self.destinationCity = destinationcity
+        self.destinationName = destinationname
         self.ident = ident
         self.origin = origin
-        self.originCity = originCity
-        self.originName = originName
+        self.originCity = origincity
+        self.originName = originname
 
 
 class FlightAwareArrived:
 
-    def __init__(self, flightawareapiuser, flightawareapikey):
+    def __init__(self):
 
-        self.flightawareapiuser = flightawareapiuser
-        self.flightawareapikey = flightawareapikey
+        self.flightawareapiuser = config.FA_USER
+        self.flightawareapikey = config.FA_KEY
 
     def display_flight_aware_arrived_for_print(self, arrival):
         output = "Flight {0} ({1})\n" + \
@@ -54,7 +56,11 @@ class FlightAwareArrived:
     def write_flightaware_arrived_to_db(self, arrival):
 
         # open database connection
-        db = pymysql.connect('drobot.us', 'flightdatauser', '!lc9iB0jhvl0CUHlT', 'flightdata')
+        # db = pymysql.connect('drobot.us', 'flightdatauser', '!lc9iB0jhvl0CUHlT', 'flightdata')
+        db = pymysql.connect(config.FAL_DBHOST,
+                             config.FAL_DBUSER,
+                             config.FAL_DBPASS,
+                             config.FAL_DBTABLE)
 
         # prepare a cursor object
         cursor = db.cursor()

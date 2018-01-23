@@ -5,6 +5,8 @@ import pymysql
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
 
+from flightawarelib import config
+
 # Given an airport, return the METAR weather info as parsed, human-readable, and raw formats.
 # If no reports are available at the requested airport but are for a nearby airport, then the reports from that airport
 # may be returned instead. If a value greater than 1 is specified for howMany then multiple past reports will be
@@ -15,10 +17,10 @@ from datetime import datetime
 
 class Metar:
 
-    def __init__(self, flightawareapiuser, flightawareapikey):
+    def __init__(self):
 
-        self.flightawareapiuser = flightawareapiuser
-        self.flightawareapikey = flightawareapikey
+        self.flightawareapiuser = config.FA_USER
+        self.flightawareapikey = config.FA_KEY
 
     # obtains metar data - connects to json
     def get_flightaware_metar(self, airport):
@@ -40,10 +42,10 @@ class Metar:
 
 class MetarEx:
 
-    def __init__(self, flightawareapiuser, flightawareapikey):
+    def __init__(self):
 
-        self.flightawareapiuser = flightawareapiuser
-        self.flightawareapikey = flightawareapikey
+        self.flightawareapiuser = config.FA_USER
+        self.flightawareapikey = config.FA_KEY
 
     # obtains metar data - connects to json
     def get_flightaware_metarex_json(self, airport, starttime, howmany="10", offset="0"):
