@@ -45,5 +45,5 @@ setup(
     license='GPL v3',
     author='jeff',
     author_email='ahuimanu@gmail.com',
-    description='A wrapper for the FlightAware XML 2 API'
+    description='A Python wrapper for the FlightAware XML 2 API'
 )
