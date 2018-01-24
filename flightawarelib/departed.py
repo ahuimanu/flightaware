@@ -4,6 +4,7 @@ import json
 import pymysql
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
+import time
 
 from flightawarelib import config
 
@@ -21,17 +22,18 @@ from flightawarelib import config
 class DepartureStruct:
 
     def __init__(self, actualarrivaltime, actualdeparturetime, aircrafttype, destination,
-                 destinationcity, destinationname, ident, origin, origincity, originname):
+                 destinationcity, destinationname, estimatedarrivaltime, ident, origin, origincity, originname):
         self.actualarrivaltime = datetime.fromtimestamp(actualarrivaltime)
         self.actualdeparturetime = datetime.fromtimestamp(actualdeparturetime)
         self.aircrafttype = aircrafttype
         self.destination = destination
-        self.destinationCity = destinationcity
-        self.destinationName = destinationname
+        self.destinationcity = destinationcity
+        self.destinationname = destinationname
+        self.estimatedarrivaltime = datetime.fromtimestamp(estimatedarrivaltime)
         self.ident = ident
         self.origin = origin
-        self.originCity = origincity
-        self.originName = originname
+        self.origincity = origincity
+        self.originname = originname
 
 
 class FlightAwareDeparted:
@@ -46,8 +48,8 @@ class FlightAwareDeparted:
                  "Departing: {2}-{3}({4}) at {5}\n" + \
                  "Arriving:  {6}-{7}({8}) at {9}\n"
 
-        return output.format(departure.ident, departure.aircrafttype, departure.originName, departure.originCity, departure.origin,
-                             departure.actualdeparturetime, departure.destinationName, departure.destinationCity,
+        return output.format(departure.ident, departure.aircrafttype, departure.originname, departure.origincity, departure.origin,
+                             departure.actualdeparturetime, departure.destinationname, departure.destinationcity,
                              departure.destination, departure.actualarrivaltime)
 
     def display_flight_aware_departed_for_csv(self):
@@ -69,15 +71,14 @@ class FlightAwareDeparted:
         # prepare SQL statement
         statement = "INSERT INTO Departed(ACTUAL_ARRIVAL_TIME, " + \
                     "ACTUAL_DEPARTURE_TIME, AIRCRAFT_TYPE, DESTINATION, " + \
-                    "DESINTATION_CITY, DESTINATION_NAME, IDENT, ORIGIN, " + \
+                    "DESINTATION_CITY, DESTINATION_NAME, ESTIMATED_ARRIVAL_TIME, IDENT, ORIGIN, " + \
                     "ORIGIN_CITY, ORIGIN_NAME) VALUES (%s, %s, %s," + \
-                    "%s, %s, %s, %s, %s, %s, %s)"
+                    "%s, %s, %s, %s, %s, %s, %s, %s)"
 
         data = (departure.actualarrivaltime, departure.actualdeparturetime, departure.aircrafttype,
-                departure.destination, departure.destinationCity, departure.destinationName,
-                departure.ident, departure.origin, departure.originCity, departure.originName)
-
-        # print(statement)
+                departure.destination, departure.destinationcity, departure.destinationname,
+                departure.estimatedarrivaltime, departure.ident, departure.origin, departure.origincity,
+                departure.originname)
 
         # give it a shot
         try:
@@ -103,8 +104,9 @@ class FlightAwareDeparted:
         user = self.flightawareapiuser
         key = self.flightawareapikey
 
+        # TODO parse out service endpoint to variable
         # Service URL
-        url = "http://flightxml.flightaware.com/json/FlightXML2/Arrived?airport=" + airport + \
+        url = "http://flightxml.flightaware.com/json/FlightXML2/Departed?airport=" + airport + \
               "&filter=" + filtertype + "&howMany=" + str(howmany) + "&offset=" + str(offset)
 
         # make request
@@ -113,31 +115,47 @@ class FlightAwareDeparted:
         # translate to JSON
         flightaware = req.json()
 
-        for arrival in flightaware["ArrivedResult"]["arrivals"]:
-            # int actual time of arrival (seconds since 1970)
-            actualarrivaltime = arrival["actualarrivaltime"]
-            # int actual time of departure (seconds since 1970)
-            actualdeparturetime = arrival["actualdeparturetime"]
-            # aircrafttype string	aircraft type ID
-            aircrafttype = arrival["aircrafttype"]
-            # destination string the destination ICAO airport ID
-            destination = arrival["destination"]
-            # destinationCity string
-            destinationcity = arrival["destinationCity"]
-            # destinationName string
-            destinationname = arrival["destinationName"]
-            # ident string flight ident or tail number
-            ident = arrival["ident"]
-            # origin string the origin ICAO airport ID
-            origin = arrival["origin"]
-            # originCity string
-            origincity = arrival["originCity"]
-            # originName string
-            originname = arrival["originName"]
+        # TODO place the keys below into variables
 
-            departures.append(DepartureStruct(actualarrivaltime, actualdeparturetime, aircrafttype, destination,
-                                                destinationcity, destinationname, ident, origin, origincity,
-                                                originname))
+        for departure in flightaware["DepartedResult"]["departures"]:
+            # int actual time of arrival (seconds since 1970)
+            actualarrivaltime = departure["actualarrivaltime"]
+            # int actual time of departure (seconds since 1970)
+            actualdeparturetime = departure["actualdeparturetime"]
+            # aircrafttype string	aircraft type ID
+            aircrafttype = departure["aircrafttype"]
+            # destination string the destination ICAO airport ID
+            destination = departure["destination"]
+            # destinationCity string
+            destinationcity = departure["destinationCity"]
+            # destinationName string
+            destinationname = departure["destinationName"]
+            # ident string flight ident or tail number
+            estimatedarrivaltime = departure["estimatedarrivaltime"]
+            # ident string flight ident or tail number
+            ident = departure["ident"]
+            # origin string the origin ICAO airport ID
+            origin = departure["origin"]
+            # originCity string
+            origincity = departure["originCity"]
+            # originName string
+            originname = departure["originName"]
+
+            # the data is often not populated
+            if actualarrivaltime == 0:
+                actualarrivaltime = estimatedarrivaltime
+
+            departures.append(DepartureStruct(actualarrivaltime,
+                                              actualdeparturetime,
+                                              aircrafttype.strip(),
+                                              destination.strip(),
+                                              destinationcity.strip(),
+                                              destinationname.strip(),
+                                              estimatedarrivaltime,
+                                              ident.strip(),
+                                              origin.strip(),
+                                              origincity.strip(),
+                                              originname.strip()))
 
         return departures
 

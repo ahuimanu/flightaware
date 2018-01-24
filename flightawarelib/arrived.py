@@ -26,12 +26,12 @@ class ArrivalStruct:
         self.actualdeparturetime = datetime.fromtimestamp(actualdeparturetime)
         self.aircrafttype = aircrafttype
         self.destination = destination
-        self.destinationCity = destinationcity
-        self.destinationName = destinationname
+        self.destinationcity = destinationcity
+        self.destinationname = destinationname
         self.ident = ident
         self.origin = origin
-        self.originCity = origincity
-        self.originName = originname
+        self.origincity = origincity
+        self.originname = originname
 
 
 class FlightAwareArrived:
@@ -46,8 +46,8 @@ class FlightAwareArrived:
                  "Departing: {2}-{3}({4}) at {5}\n" + \
                  "Arriving:  {6}-{7}({8}) at {9}\n"
 
-        return output.format(arrival.ident, arrival.aircrafttype, arrival.originName, arrival.originCity, arrival.origin,
-                             arrival.actualdeparturetime, arrival.destinationName, arrival.destinationCity,
+        return output.format(arrival.ident, arrival.aircrafttype, arrival.originname, arrival.origincity, arrival.origin,
+                             arrival.actualdeparturetime, arrival.destinationname, arrival.destinationcity,
                              arrival.destination, arrival.actualarrivaltime)
 
     def display_flight_aware_arrived_for_csv(self):
@@ -74,10 +74,8 @@ class FlightAwareArrived:
                     "%s, %s, %s, %s, %s, %s, %s)"
 
         data = (arrival.actualarrivaltime, arrival.actualdeparturetime, arrival.aircrafttype,
-                arrival.destination, arrival.destinationCity, arrival.destinationName,
-                arrival.ident, arrival.origin, arrival.originCity, arrival.originName)
-
-        # print(statement)
+                arrival.destination, arrival.destinationcity, arrival.destinationname,
+                arrival.ident, arrival.origin, arrival.origincity, arrival.originname)
 
         # give it a shot
         try:
@@ -103,6 +101,7 @@ class FlightAwareArrived:
         user = self.flightawareapiuser
         key = self.flightawareapikey
 
+        # TODO parse out service endpoint to variable
         # Service URL
         url = "http://flightxml.flightaware.com/json/FlightXML2/Arrived?airport=" + airport + \
               "&filter=" + filterType + "&howMany=" + str(howMany) + "&offset=" + str(offset)
@@ -112,6 +111,8 @@ class FlightAwareArrived:
 
         # translate to JSON
         flightaware = req.json()
+
+        # TODO place the keys below into variables
 
         for arrival in flightaware["ArrivedResult"]["arrivals"]:
             # int actual time of arrival (seconds since 1970)
@@ -135,9 +136,16 @@ class FlightAwareArrived:
             # originName string
             originname = arrival["originName"]
 
-            arrivals.append(ArrivalStruct(actualarrivaltime, actualdeparturetime, aircrafttype, destination,
-                                          destinationcity, destinationname, ident, origin, origincity,
-                                          originname))
+            arrivals.append(ArrivalStruct(actualarrivaltime,
+                                          actualdeparturetime,
+                                          aircrafttype.strip(),
+                                          destination.strip(),
+                                          destinationcity,
+                                          destinationname.strip(),
+                                          ident.strip(),
+                                          origin.strip(),
+                                          origincity.strip(),
+                                          originname.strip()))
 
         return arrivals
 
