@@ -55,18 +55,20 @@ class FlightAwareArrived:
 
     def write_flightaware_arrived_to_db(self, arrival):
 
+        # TODO Move this to using an O:RM approach
+
         # open database connection
         # db = pymysql.connect('drobot.us', 'flightdatauser', '!lc9iB0jhvl0CUHlT', 'flightdata')
         db = pymysql.connect(config.FAL_DBHOST,
                              config.FAL_DBUSER,
                              config.FAL_DBPASS,
-                             config.FAL_DBTABLE)
+                             config.FAL_DBNAME)
 
         # prepare a cursor object
         cursor = db.cursor()
 
         # prepare SQL statement
-        statement = "INSERT INTO FlightArrival(ACTUAL_ARRIVAL_TIME, " + \
+        statement = "INSERT INTO Arrived(ACTUAL_ARRIVAL_TIME, " + \
                     "ACTUAL_DEPARTURE_TIME, AIRCRAFT_TYPE, DESTINATION, " + \
                     "DESINTATION_CITY, DESTINATION_NAME, IDENT, ORIGIN, " + \
                     "ORIGIN_CITY, ORIGIN_NAME) VALUES (%s, %s, %s," + \
