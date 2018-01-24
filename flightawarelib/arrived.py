@@ -18,7 +18,7 @@ from flightawarelib import config
 # Times returned are seconds since 1970 (UNIX epoch seconds).
 
 
-class ArrivalFlightStruct:
+class ArrivalStruct:
 
     def __init__(self, actualarrivaltime, actualdeparturetime, aircrafttype, destination,
                  destinationcity, destinationname, ident, origin, origincity, originname):
@@ -58,7 +58,6 @@ class FlightAwareArrived:
         # TODO Move this to using an O:RM approach
 
         # open database connection
-        # db = pymysql.connect('drobot.us', 'flightdatauser', '!lc9iB0jhvl0CUHlT', 'flightdata')
         db = pymysql.connect(config.FAL_DBHOST,
                              config.FAL_DBUSER,
                              config.FAL_DBPASS,
@@ -136,9 +135,9 @@ class FlightAwareArrived:
             # originName string
             originname = arrival["originName"]
 
-            arrivals.append(ArrivalFlightStruct(actualarrivaltime, actualdeparturetime, aircrafttype, destination,
-                                                destinationcity, destinationname, ident, origin, origincity,
-                                                originname))
+            arrivals.append(ArrivalStruct(actualarrivaltime, actualdeparturetime, aircrafttype, destination,
+                                          destinationcity, destinationname, ident, origin, origincity,
+                                          originname))
 
         return arrivals
 
