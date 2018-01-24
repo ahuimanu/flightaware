@@ -87,7 +87,7 @@ class MetarEx:
                  "Pressure: {6}\n" + \
                  "{7} from {8} degrees at {9} knots\n" + \
                  "{10} ({11} at {12})\n" + \
-                 "Visibility is {13}\n statute miles" + \
+                 "Visibility is {13} statute miles\n" + \
                  "Raw: {14}\n"
         output = output.format(airport,
                                datetime.fromtimestamp(time),
