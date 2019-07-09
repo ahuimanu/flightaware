@@ -13,6 +13,15 @@ It is necessary to create a __.env__ file to configure the following ENVIRONMENT
 * FA_USER => FlightAware user account
 * FA_KEY  => FlightAware XML 2.0 Key
 
+for example:
+
+FAL_DBHOST  = 123.123.123.123
+FAL_DBUSER  = flightdatauser
+FAL_DBPASS  = password
+FAL_DBNAME = flightdata
+FA_USER = flightdatauser
+FA_KEY  = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
 ### To Do
 
 * Configure database schema for entire library
