@@ -69,7 +69,7 @@ class FlightAwareEnroute:
         cursor = db.cursor()
 
         # prepare SQL statement
-        statement = "INSERT INTO Enroute( ACTUAL_DEPARTURE_TIME, AIRCRAFT_TYPE, DESTINATION, DESINTATION_CITY, " + \
+        statement = "INSERT INTO Enroute( ACTUAL_DEPARTURE_TIME, AIRCRAFT_TYPE, DESTINATION, DESTINATION_CITY, " + \
                     "DESTINATION_NAME, ESTIMATED_ARRIVAL_TIME, FILED_DEPARTURE_TIME, IDENT, ORIGIN, ORIGIN_CITY, " + \
                     "ORIGIN_NAME) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 

@@ -69,7 +69,7 @@ class FlightAwareArrived:
         # prepare SQL statement
         statement = "INSERT INTO Arrived(ACTUAL_ARRIVAL_TIME, " + \
                     "ACTUAL_DEPARTURE_TIME, AIRCRAFT_TYPE, DESTINATION, " + \
-                    "DESINTATION_CITY, DESTINATION_NAME, IDENT, ORIGIN, " + \
+                    "DESTINATION_CITY, DESTINATION_NAME, IDENT, ORIGIN, " + \
                     "ORIGIN_CITY, ORIGIN_NAME) VALUES (%s, %s, %s," + \
                     "%s, %s, %s, %s, %s, %s, %s)"
 
