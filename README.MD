@@ -13,7 +13,7 @@ It is necessary to create a __.env__ file to configure the following ENVIRONMENT
 * FA_USER => FlightAware user account
 * FA_KEY  => FlightAware XML 2.0 Key
 
-for example:
+for example you would place information like this in the `.env` file:
 
 ```
 FAL_DBHOST  = 123.123.123.123
