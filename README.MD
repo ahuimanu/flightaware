@@ -15,17 +15,14 @@ It is necessary to create a __.env__ file to configure the following ENVIRONMENT
 
 for example:
 
+```
 FAL_DBHOST  = 123.123.123.123
-
 FAL_DBUSER  = flightdatauser
-
 FAL_DBPASS  = password
-
 FAL_DBNAME = flightdata
-
 FA_USER = flightdatauser
-
 FA_KEY  = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
 
 ### To Do
 
